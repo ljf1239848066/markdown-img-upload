@@ -17,11 +17,11 @@
 
 1. 极速截图转图片链接
 
-<img src="http://7sbqce.com1.z0.glb.clouddn.com/markdownmarkdownimg.gif" width="660" />
+<img src="http://lxzh.oss-cn-hangzhou.aliyuncs.com/markdown/1573149197813.gif" width="1000"/>
 
 2. 极速本地图片转图片链接
 
-![本地图片转图片链接](http://7xp3xc.com1.z0.glb.clouddn.com/201602markdown_img_local.gif)
+![本地图片转图片链接](http://lxzh.oss-cn-hangzhou.aliyuncs.com/markdown/1573149737181.gif)
 
 ##  特性
 
@@ -35,46 +35,66 @@
 
 ### 安装依赖
 
-由于七牛SDK使用了`requests`库进行网络请求，所以，**首先得安装python的`requests`库**；推荐使用pip进行安装。
+1. 七牛云参考[原作者github](https://github.com/tiann/markdown-img-upload)
+2. 这里介绍使用阿里云OSS对象存储作为图床的基本步骤
 
-> 注意：是`requests`库，而不是`request`库，安装错误则无法正常使用。
+阿里OSS2的SDK,[官网链接](https://help.aliyun.com/document_detail/85288.html?spm=a2c4g.11186623.6.815.4f717ebe2LVL8g)；推荐使用pip进行安装。
 
-### 获取七牛图床信息
-#### 注册七牛
-选择使用七牛的图床，没有账号的话先[注册](https://portal.qiniu.com/signup?code=3ldifp9oti442);
+```
+pip install oss2
+```
 
-#### 新建图床
-注册成功之后登陆，先新建一个图床：在左上角选择**新建空间**
 
-<img src="http://7sbqce.com1.z0.glb.clouddn.com/markdown/1447222213451.png" width="271"/>
+### 获取阿里OSS对象存储信息
+
+#### 注册阿里云帐号
+选择使用阿里OSS对象存储作为图床，没有账号的话先[注册](https://oss.console.aliyun.com/overview)，注册完后购买OSS对象存储套餐，当前最新价格是9元包40G每年，空间绝对管够
+
+#### 新建Bucket
+
+购买成功后进入控制台，先新建Bucket存储空间：在左上角选择**创建Bucket**
+
+<img src="http://lxzh.oss-cn-hangzhou.aliyuncs.com/markdown/1573147200829.png" width="208"/>
 
 记下这个名字，比如：booluimg
 
-#### 图床访问地址
-新建空间之后，进入空间设置，点击左边的**域名设置**，记下你的图床对外的域名：
+#### 空间访问地址
+新建空间之后，进入空间设置，点击左边的**概览**，记下你的空间对外的域名：**Bucket域名**
 
-<img src="http://7sbqce.com1.z0.glb.clouddn.com/markdown/1447222404913.png" width="960"/>
+<img src="http://lxzh.oss-cn-hangzhou.aliyuncs.com/markdown/1573147353078.png" width="1145"/>
 
-#### 图床的Ak和SK
-要使用七牛SDK来访问图床，需要拿到图床的Access Key以及Secret Key；点击右上角你的用户名，选择账号设置：
+#### 空间设置
 
-<img src="http://7sbqce.com1.z0.glb.clouddn.com/markdown/1447222540299.png" width="164"/>
+阿里OSS对象存储默认没有开启对外访问，上传的文件会在基础域名的基础上生成一个很长的链接，并且会有有限时间，过了之后就会变更。作为图床，我们必须开启他的外网访问权限。在空间的基础设置中，修改**Bucket ACL**(空间访问控制级别)为公共读：
+<img src="http://lxzh.oss-cn-hangzhou.aliyuncs.com/markdown/1573147552363.png" width="578"/>
 
-然后，点击左边的**密钥**就可以看到你的**AK**以及**SK**
+另外还需配置一个静态页面，在空间的基础设置往下划找到**静态页面**:
+<img src="http://lxzh.oss-cn-hangzhou.aliyuncs.com/markdown/1573147755047.png" width="925"/>
+
+设置一个默认首页对应的html文件，随便写个简单的html文件上传到空间根目录，这里配置对应的相对路径即可。
+
+
+#### 空间的Ak和SK
+要使用OSS2 SDK来访问对象存储，需要拿到Access Key以及Secret Key；点击右上角你的头像，选择accesskeys：
+
+<img src="http://lxzh.oss-cn-hangzhou.aliyuncs.com/markdown/1573148044827.png" width="280"/>
+
+进去后按指引即可你的**AK**以及**SK**，也可以开启使用子用户AccessKey
 
 ### 配置
 #### 安装 Alfred 工作流
 
-- 首先请确认`request`库安装成功；
+- 首先请确认`oss2`库安装成功；
 - 然后下载并导入项目目录中的 Alfred 工作流文件；
 - **设置触发热键！**，如`Cmd + Ctrl + V`，注意保证不要与其他软件的热键冲突。
 
 #### 配置图床
 
 在前面，图床的信息拿到之后，在 alfred 里面输入`mdimgsetup`,就会弹出一个文本文档，如下：
-<img src="http://7sbqce.com1.z0.glb.clouddn.com/markdown/1447222708345.png" width="256"/>
+<img src="http://lxzh.oss-cn-hangzhou.aliyuncs.com/markdown/1573148425587.png" width="639"/>
 
-设置你的七牛图床的信息，AK，SK是访问密钥，url是上面配置的图床访问地址，bucket是空间名字，prefix是图床上传的前缀，这个可以随意配置，作为分类使用，比如我的是 markdown。
+
+设置你的OSS对象存储的信息，AK，SK是访问密钥，url是上面配置的图床访问地址，bucket是空间名字，prefix是图床上传的前缀，这个可以随意配置，作为分类使用，比如我的是 markdown。
 
 ## 使用
 

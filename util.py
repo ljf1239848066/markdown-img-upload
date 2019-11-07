@@ -3,11 +3,20 @@ import os, re, subprocess
 import ConfigParser
 from tempfile import NamedTemporaryFile
 
+TARGET = 'alioss'
 CONFIG_FILE = 'config.ini'
 
 def notice(msg, title="notice"): 
     ''' notoce message in notification center'''
     os.system('osascript -e \'display notification "%s" with title "%s"\'' % (msg, title))
+
+def picbed_name():
+    if(TARGET=='qiniu'):
+        return '七牛图床'
+    elif(TARGET=='alioss'):
+        return '阿里OSS对象存储'
+    else:
+        return '图床'
 
 def read_config():
     ''' read congig from config.ini, return a five tuple'''
@@ -16,10 +25,10 @@ def read_config():
     cf = ConfigParser.ConfigParser()
     cf.read(CONFIG_FILE)
 
-    qiniu_section = 'qiniu'
+    config_section = 'config'
     keys = ('ak', 'sk', 'url', 'bucket', 'prefix')
     try:
-        res = map(lambda x: cf.get(qiniu_section, x), keys)
+        res = map(lambda x: cf.get(config_section, x), keys)
     except ConfigParser.NoOptionError:
         return
     
@@ -33,14 +42,15 @@ def open_with_editor(filepath):
 
 def generate_config_file():
     import textwrap
+    name = picbed_name()
     config_file_init_content = '''\
     ; 详细设置见 https://github.com/tiann/markdown-img-upload
-    [qiniu]
-    ak=七牛图床的Access Key
-    sk=七牛图床的Secret Key
-    url=七牛图床地址
-    bucket=七牛图床空间名
-    prefix=七牛图床资源前缀名'''
+    [config]
+    ak=%s的Access Key
+    sk=%s的Secret Key
+    url=%s地址
+    bucket=%s空间名
+    prefix=%s资源前缀名'''%(name,name,name,name,name)
     with open(CONFIG_FILE, 'w') as fp:
         fp.write(textwrap.dedent(config_file_init_content))
 

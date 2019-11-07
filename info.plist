@@ -3,14 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string>com.weishu.markdownimg</string>
+	<string>com.lxzh123.mdimg</string>
 	<key>category</key>
-	<string>Productivity</string>
+	<string>Tools</string>
 	<key>connections</key>
 	<dict>
-		<key>8BFF9926-79DA-413A-A4EB-63DB997DF739</key>
-		<array/>
-		<key>AFB4A236-0658-4EC5-BA89-1CCF93C2A4A3</key>
+		<key>0F9FEAE5-29C0-44D1-BF99-80CECEA4953F</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -21,6 +19,8 @@
 				<string></string>
 			</dict>
 		</array>
+		<key>8BFF9926-79DA-413A-A4EB-63DB997DF739</key>
+		<array/>
 		<key>BE152935-4073-489A-8624-D4410C803C1B</key>
 		<array>
 			<dict>
@@ -34,7 +34,7 @@
 		</array>
 	</dict>
 	<key>createdby</key>
-	<string>weishu</string>
+	<string>lxzh123</string>
 	<key>description</key>
 	<string>Utility to simplify the img upload in markdown</string>
 	<key>disabled</key>
@@ -51,11 +51,11 @@
 				<key>argument</key>
 				<integer>0</integer>
 				<key>hotkey</key>
-				<integer>9</integer>
+				<integer>1</integer>
 				<key>hotmod</key>
-				<integer>1310720</integer>
+				<integer>1179648</integer>
 				<key>hotstring</key>
-				<string>V</string>
+				<string>S</string>
 				<key>leftcursor</key>
 				<false/>
 				<key>modsmode</key>
@@ -66,7 +66,7 @@
 			<key>type</key>
 			<string>alfred.workflow.trigger.hotkey</string>
 			<key>uid</key>
-			<string>AFB4A236-0658-4EC5-BA89-1CCF93C2A4A3</string>
+			<string>0F9FEAE5-29C0-44D1-BF99-80CECEA4953F</string>
 			<key>version</key>
 			<integer>1</integer>
 		</dict>
@@ -80,7 +80,7 @@
 				<key>script</key>
 				<string># coding: utf-8
 from clipboard import get_paste_img_file
-from upload import upload_qiniu
+from upload import upload_img
 import util
 import os
 import subprocess
@@ -92,7 +92,8 @@ if not os.path.exists(util.CONFIG_FILE):
 
 config = util.read_config()
 if not config:
-    util.notice('请先设置你的七牛图床信息')
+    name = util.picbed_name()
+    util.notice('请先设置你的%s信息'%name)
     util.open_with_editor(util.CONFIG_FILE)
     sys.exit(0)
 
@@ -113,12 +114,14 @@ if img_file:
 
     # make it to clipboard
     os.system("echo '%s' | pbcopy" % markdown_url)
-    os.system('osascript -e \'tell application "System Events" to keystroke "v" using command down\'')
+    #os.system('osascript -e \'tell application "System Events" to keystroke "v" using command down\'')
     upload_file = util.try_compress_png(img_file, format!='gif')
-    if not upload_qiniu(upload_file.name, upload_name): util.notice("上传图片到图床失败，请检查网络后重试")
+    if not upload_img(upload_file.name, upload_name): util.notice("上传图片到图床失败，请检查网络后重试")
 else:
     util.notice("剪切版里没有图片！")
-    </string>
+
+    # imagefilename = "/tmp/1486878546367.png"
+    # upload_qiniu(imagefilename, '123.png')</string>
 				<key>type</key>
 				<integer>3</integer>
 			</dict>
@@ -180,12 +183,12 @@ util.open_with_editor(util.CONFIG_FILE)</string>
 	<string></string>
 	<key>uidata</key>
 	<dict>
-		<key>8BFF9926-79DA-413A-A4EB-63DB997DF739</key>
+		<key>0F9FEAE5-29C0-44D1-BF99-80CECEA4953F</key>
 		<dict>
 			<key>ypos</key>
 			<real>10</real>
 		</dict>
-		<key>AFB4A236-0658-4EC5-BA89-1CCF93C2A4A3</key>
+		<key>8BFF9926-79DA-413A-A4EB-63DB997DF739</key>
 		<dict>
 			<key>ypos</key>
 			<real>10</real>
@@ -202,6 +205,6 @@ util.open_with_editor(util.CONFIG_FILE)</string>
 		</dict>
 	</dict>
 	<key>webaddress</key>
-	<string>http://www.tianweishu.com</string>
+	<string>http://www.lxzh123.com</string>
 </dict>
 </plist>
