@@ -4,9 +4,9 @@ import tempfile
 import imghdr
 import shutil
 
-from AppKit import NSPasteboard, NSPasteboardTypePNG,\
-        NSPasteboardTypeTIFF, NSPasteboardTypeString,\
-        NSFilenamesPboardType
+from AppKit import NSPasteboard, NSPasteboardTypePNG, \
+    NSPasteboardTypeTIFF, NSPasteboardTypeString, \
+    NSFilenamesPboardType
 
 # image_file, need_format, need_compress
 NONE_IMG = (None, False, None)
@@ -32,7 +32,7 @@ def get_paste_img_file():
         img_type = imghdr.what(img_path)
 
         if not img_type:
-            # not image file 
+            # not image file
             return NONE_IMG
 
         if img_type not in ('png', 'jpeg', 'gif'):
@@ -71,6 +71,7 @@ def get_paste_img_file():
         # close the file explicitly
         tmp_clipboard_img_file.close()
         return png_file, True, 'png'
-        
+    return NONE_IMG
+
 if __name__ == '__main__':
     get_paste_img_file()

@@ -19,8 +19,9 @@ if not config:
 
 url = '%s/%s' % (config['url'], config['prefix'])
 
-img_file, need_format, format = get_paste_img_file()
-if img_file:
+result = get_paste_img_file()
+if result:
+    img_file, need_format, format = result
     # has image
 
     # use time to generate a unique upload_file name, we can not use the tmp file name
@@ -36,9 +37,10 @@ if img_file:
     os.system("echo '%s' | pbcopy" % markdown_url)
     #os.system('osascript -e \'tell application "System Events" to keystroke "v" using command down\'')
     upload_file = util.try_compress_png(img_file, format!='gif')
-    if not upload_img(upload_file.name, upload_name): util.notice("上传图片到图床失败，请检查网络后重试")
+    if upload_img(upload_file.name, upload_name): util.notice("上传图片到图床成功")
+    else: util.notice("上传图片到图床失败，请检查网络后重试")
 else:
     util.notice("剪切版里没有图片！")
 
     # imagefilename = "/tmp/1486878546367.png"
-    # upload_qiniu(imagefilename, '123.png')
+    #upload_img(imagefilename, '12345.png')

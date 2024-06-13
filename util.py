@@ -1,6 +1,6 @@
 # -*- coding: utf-8
 import os, re, subprocess
-import ConfigParser
+import configparser
 from tempfile import NamedTemporaryFile
 
 TARGET = 'alioss'
@@ -22,14 +22,14 @@ def read_config():
     ''' read congig from config.ini, return a five tuple'''
     if not os.path.exists(CONFIG_FILE):
         return
-    cf = ConfigParser.ConfigParser()
+    cf = configparser.ConfigParser()
     cf.read(CONFIG_FILE)
 
     config_section = 'config'
     keys = ('ak', 'sk', 'url', 'bucket', 'prefix')
     try:
-        res = map(lambda x: cf.get(config_section, x), keys)
-    except ConfigParser.NoOptionError:
+        res = list(map(lambda x: cf[config_section][x], keys))
+    except configparser.NoOptionError:
         return
     
     if not all(map(lambda x: re.match(r'\w+', x), res)):
